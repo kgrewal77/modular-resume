@@ -1,13 +1,78 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import url(//db.onlinewebfonts.com/c/50cd2aad9c8f35800bb6beac3ad42f16?family=Azonix);
+
+.text-pane {
+	display: flex;
+	width: 40%;
+	padding:5%;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.img-pane {
+	display: flex;
+	position: relative;
+    background-size: cover;
+	width: 50%;
+	align-items: center;
+	height: 100%;
 }
+
+.download-btn {
+/*    height:-webkit-fill-available;
+*/    width: -webkit-fill-available;
+}
+
+.center-of-pane {
+    left: 50%;
+    position: absolute;
+    display: inline;
+    width: fit-content;
+    height: fit-content;
+}
+
+.linkedin-logo {
+/*    height:-webkit-fill-available;
+*/    width: -webkit-fill-available;
+}
+
+.resume-title-label {
+
+    display: inline;
+    font-family: Azonix;
+	font-size: 5em;
+	margin-top: 0.67em;
+	margin-bottom: 0.67em;
+	margin-left: 0;
+	margin-right: 0;
+	font-weight: bold;
+	color: black;
+}
+
+.slide {
+    display: flex;
+    align-items: center;
+	height: 100%;
+}
+
+.third {
+	width:33%;
+}
+
+.fourth {
+	width:100px;
+	height: 100px;
+	padding: 20px;
+}
+
+#root {
+	height: 100%;
+}
+
+img {
+	max-width: 100%;
+	height:auto;
+
+}
+
+body, html {
+  height: 100%;
+  margin-left: 0px;
+ }
