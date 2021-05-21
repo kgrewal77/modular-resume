@@ -1,4 +1,45 @@
 @import url(//db.onlinewebfonts.com/c/50cd2aad9c8f35800bb6beac3ad42f16?family=Azonix);
+@import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css);
+/*Small devices (landscape phones, 576px and up)*/
+
+.leftnav {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 0px;
+	padding-top: 15vh;
+	background-color: #bfd4bf;
+	height: 100%;
+	z-index: 1;
+	overflow: hidden;
+}
+
+.leftnav a {
+	width: auto;
+	display: inline-block;
+}
+
+
+.navicon {
+	padding: 1vh;
+	font-size: 8vh;
+}
+
+.header {
+    height: 10vh;
+	width: 100vw;
+	background:darkseagreen;
+	z-index: 2;
+}
+
+.sticky {
+	position: fixed;
+	top: 0;
+}
+
+.top-slide {
+	padding-top: 15%;
+}
 
 .text-pane {
 	display: flex;
@@ -8,29 +49,21 @@
 
 .img-pane {
 	display: flex;
-	position: relative;
+	flex-direction: column;
     background-size: cover;
 	width: 50%;
 	align-items: center;
-	height: 100%;
-}
-
-.download-btn {
-/*    height:-webkit-fill-available;
-*/    width: -webkit-fill-available;
 }
 
 .center-of-pane {
-    left: 50%;
-    position: absolute;
-    display: inline;
+	display: flex;
+	flex-direction: column;
     width: fit-content;
     height: fit-content;
 }
 
 .linkedin-logo {
-/*    height:-webkit-fill-available;
-*/    width: -webkit-fill-available;
+    width: -webkit-fill-available;
 }
 
 .resume-title-label {
@@ -62,6 +95,7 @@
 	padding: 20px;
 }
 
+
 #root {
 	height: 100%;
 }
@@ -69,10 +103,19 @@
 img {
 	max-width: 100%;
 	height:auto;
-
+    text-align: center;
 }
 
 body, html {
   height: 100%;
-  margin-left: 0px;
- }
+  margin: 0px;
+}
+
+/* Medium devices (tablets, 768px and up)*/
+@media (min-width: 768px) { }
+
+/* Large devices (desktops, 992px and up)*/
+@media (min-width: 992px) { }
+
+/* Extra large devices (large desktops, 1200px and up)*/
+@media (min-width: 1200px) { }
