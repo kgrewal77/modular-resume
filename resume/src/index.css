@@ -2,21 +2,40 @@
 @import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css);
 /*Small devices (landscape phones, 576px and up)*/
 
-.leftnav {
+.expand-icon {
+
+}
+
+.icon-footer {
 	position: fixed;
+	bottom: 0;
+	height: 15vh;
+	z-index: 2;
+	font-size: 25vw;
+	text-align: right;
+	width: 95vw;
+}
+
+.topnav {
+	position: fixed;
+	text-align: right;
 	top: 0;
 	left: 0;
 	width: 0px;
 	padding-top: 15vh;
-	background-color: #bfd4bf;
-	height: 100%;
+	background-color: peachpuff;
+	height: 85%;
 	z-index: 1;
 	overflow: hidden;
 }
 
-.leftnav a {
+.topnav a {
 	width: auto;
 	display: inline-block;
+}
+
+.link-table {
+	width: 100vw;
 }
 
 
@@ -26,6 +45,7 @@
 }
 
 .header {
+	text-align: right;
     height: 10vh;
 	width: 100vw;
 	background:darkseagreen;
@@ -37,8 +57,9 @@
 	top: 0;
 }
 
-.top-slide {
+#content {
 	padding-top: 15%;
+	padding-bottom: 20%;
 }
 
 .text-pane {
@@ -90,11 +111,15 @@
 }
 
 .fourth {
-	width:100px;
-	height: 100px;
-	padding: 20px;
+	width:20vw;
+	height: 20vw;
+	padding-bottom:0;
+	padding-left: 4vw;
 }
 
+.fourth-first{
+	padding-left: 0;
+}
 
 #root {
 	height: 100%;
