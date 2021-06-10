@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import isMobile from 'react-device-detect';
@@ -21,75 +21,45 @@ const github = "https://github.com/kgrewal77";
 
 // Header Components
 
-  class Header extends React.Component {
+  const Header = () => {
+     return (
+        <div className="header sticky">
 
-
-    render(){
-       return (
-        <div>
-          <div className="topnav">
-          </div>
-          <div className="header sticky">
-
-          </div>
         </div>
-          );  
-     }
+        );
   }
 
 // Content Components
 
-class ImgPane extends React.Component {
-  render() {
-    const img_src = this.props.img_src;
-    //console.log(img_src);
-    return (
-      <span className={this.props.size === 2 ? "img-pane" :"img-pane img-pane__full"}
-            style={{backgroundImage:`url(${img_src})`}}>
-        {this.props.children}
+  const Pane = (props) => {
 
+    return (
+      <span className={props.size === 2 ? "pane" :"pane pane__full"}
+            style={props.img_src && {backgroundImage:`url(${props.img_src})`}}>
+        <div className="text-pane">{props.text}</div>
+        {props.children}
       </span>
 
     );
   }
-}
-
-class TextPane extends React.Component {
 
 
-  render() {
+  const ContentRow = (props) => {
 
+    const l = props.panels.length;
     return (
-      <span className={this.props.size === 2 ? "text-pane" :"text-pane text-pane__full"}>
-        {this.props.text}
-        {this.props.children}
-      </span>
+        <div className={`slide ${props.index === 0 ? "top-slide":" "}`}>
+          {props.panels.map((value,index) => {
+                return <Pane size={l}
+                             key={index}
+                             text={value.content}
+                             img_src={value.img}/>
 
-    );
-  }
-}
-
-
-class ContentRow extends React.Component {
-
-  render() {
-    const panels = this.props.panels; 
-    const l = this.props.panels.length;
-    return (
-        <div className={`slide ${this.props.index === 0 ? "top-slide":" "}`}>
-          {panels.map((value,index) => {
-            switch(value.type) {
-              case 'image':
-                return <ImgPane size={l} img_src={value.content}/>
-              default:
-                return <TextPane size={l} text={value.content}/>
-            }
           })}
         </div>
-        
+
     );
   }
-}
 
 
 class Content extends React.Component {
@@ -115,7 +85,7 @@ class Content extends React.Component {
     const index = this.state.current;
     const value = this.props.rowdata[index];
     return (
-      <div 
+      <div
           id="content"
           onTouchStart={touchStartEvent => this.handleTouchStart(touchStartEvent)}
           onTouchMove={touchMoveEvent => this.handleTouchMove(touchMoveEvent)}
@@ -163,7 +133,7 @@ class Content extends React.Component {
       intervalId: null
     });
   }
-  
+
   handleMove(clientY) {
     if (this.state.beingTouched) {
       const touchY = clientY;
@@ -172,9 +142,9 @@ class Content extends React.Component {
       const velocity = 20 * (touchY - this.state.prevTouchY) / elapsed;
       let deltaY = touchY - this.state.touchStartY + this.state.originalOffset;
       if (deltaY < -200) {
-        this.handleSwipe(-1);
-      } else if (deltaY > 200) {
         this.handleSwipe(1);
+      } else if (deltaY > 200) {
+        this.handleSwipe(-1);
       }
       this.setState({
         left: deltaY,
@@ -184,7 +154,7 @@ class Content extends React.Component {
       });
     }
   }
-  
+
   handleEnd() {
     this.setState({
       velocity: this.state.velocity,
@@ -198,187 +168,137 @@ class Content extends React.Component {
     //touchStartEvent.preventDefault();
     this.handleStart(touchStartEvent.targetTouches[0].clientY);
   }
-  
+
   handleTouchMove(touchMoveEvent) {
     this.handleMove(touchMoveEvent.targetTouches[0].clientY);
   }
-  
+
   handleTouchEnd() {
     this.handleEnd();
   }
 }
 
-// Footer Code
-  class LinkImage extends React.Component {
+// Footer Components
+  const LinkImage = (props) => {
 
-    render() {
-
-      return (
-        <a href={this.props.link}
-            target="_blank"
-            rel="noreferrer" > 
-          <img src={this.props.image_src}
-               alt={this.props.image_alt}
-               className={this.props.classes}>
-          </img>
-        </a>
-      );
-    }
+    return (
+      <a href={props.link}
+          target="_blank"
+          rel="noreferrer" >
+        <img src={props.image_src}
+             alt={props.image_alt}
+             className={props.classes}>
+        </img>
+      </a>
+    );
   }
 
-  class IconFooter extends React.Component {
+  const IconFooter = (props) => {
 
-    constructor(props) {
+    //const [expanded, setExpanded] = useState(props.expanded);
 
-      super(props);
-      this.state = {
-        expanded: false
-      }
-    }
+    // const handleClickOutside = event => {
+    //     const domNode = ReactDOM.findDOMNode(this);
 
-    componentDidMount() {
-      document.addEventListener('click', this.handleClickOutside, true);
-      document.addEventListener('touchstart', this.handleClickOutside, true);
-    }
+    //     if ((!domNode || !domNode.contains(event.target)) && expanded) {
+    //         setExpanded(!expanded)
+    //     }
+    // }
 
-    componentWillUnmount() {
-      document.removeEventListener('click', this.handleClickOutside, true);
-      document.removeEventListener('touchstart', this.handleClickOutside, true);
-    }
+    // useEffect(()=>{
+    //   document.addEventListener('click', handleClickOutside, true);
+    //   document.addEventListener('touchstart', handleClickOutside, true);
+    //   return () => {
+    //     document.removeEventListener('click', handleClickOutside, true);
+    //     document.removeEventListener('touchstart', handleClickOutside, true);
+    //   };
+    // },[handleClickOutside])
 
-    handleClickOutside = event => {
-        const domNode = ReactDOM.findDOMNode(this);
 
-        if ((!domNode || !domNode.contains(event.target)) && this.state.expanded) {
-            this.setState({
-                expanded: false
-            });
-        }
-    }
+    return (
+        <div className="icon-footer">
+              <LinkImage image_src={downloadIcon}
+                         image_alt="download logo"
+                         link={resume}
+                         classes="fourth-first fourth"/>
+              <LinkImage image_src={emailIcon}
+                         image_alt="gmail logo"
+                         link={`mailto:${email}`}
+                         classes="fourth"/>
+              <LinkImage image_src={githubIcon}
+                         image_alt="github logo"
+                         link={github}
+                         classes="fourth"/>
+              <LinkImage image_src={linkedinIcon}
+                         image_alt="linkedin logo"
+                         link={linkedin}
+                         classes="fourth"/>
+          </div>
 
-    render() {
-      return (
-        <div>
-        {this.state.expanded
-          ? <div className="icon-footer">  
-                <LinkImage image_src={downloadIcon}
-                           image_alt="download logo"
-                           link={resume}
-                           classes="fourth-first fourth"/>
-                <LinkImage image_src={emailIcon}
-                           image_alt="gmail logo"
-                           link={`mailto:${email}`}
-                           classes="fourth"/>
-                <LinkImage image_src={githubIcon}
-                           image_alt="github logo"
-                           link={github}
-                           classes="fourth"/>
-                <LinkImage image_src={linkedinIcon}
-                           image_alt="linkedin logo"
-                           link={linkedin}
-                           classes="fourth"/>
-            </div>
-          : <div className="icon-footer">
-                 <i className="expand-icon fa fa-arrow-circle-left  "
-                    onClick={()=>{this.setState({expanded:true});}}
-                    >
-                 </i>
-            </div>}
-        </div>
 
-      );
-    }
+    );
   }
+
 
 // App Code
-  class App extends React.Component {
+  const App = (props) => {
 
-    constructor(props) {
-      super(props);
-      this.state = { 
-        width: 0, 
-        height: 0, 
-        key: window.location.pathname.substring(1),
-        structure: {
-          rowdata: [
-            {
-              title:'aboutMe',
-              panels:[
-                {
-                  type:'text',
-                  content:aboutMe
-                },
-                { 
-                  type:'image',
-                  content:keyboard,
-                  alt: 'muted neutrals keyboard'
-                }
-              ]
-            },
-            {
-              title:'mySkills',
-              panels:[
-                {
-                  type:'text',
-                  content:aboutMe
-                }
-              ]
-            },
-            {
-              title:'workExperience',
-              panels:[
-                {
-                  type:'text',
-                  content:aboutMe
-                },
-                {
-                  type:'text',
-                  content:aboutMe
-                }
-              ]
-            },
-            {
-              title:'closingCard',
-              panels:[
-                { 
-                  type:'image',
-                  content:keyboard,
-                  alt: 'muted neutrals keyboard'
-                }
-              ]
-            }
-          ]
-        }
+    //const [key, setKey] = useState(window.location.pathname.substring(1));
+
+    const structure = {
+        rowdata: [
+          {
+            title:'aboutMe',
+            panels:[
+              {
+                content:aboutMe
+              },
+              {
+                img:keyboard,
+              }
+            ]
+          },
+          {
+            title:'mySkills',
+            panels:[
+              {
+                content:aboutMe
+              }
+            ]
+          },
+          {
+            title:'workExperience',
+            panels:[
+              {
+                content:aboutMe
+              },
+              {
+                content:aboutMe
+              }
+            ]
+          },
+          {
+            title:'closingCard',
+            panels:[
+              {
+                img:keyboard
+              }
+            ]
+          }
+        ]
       };
-      this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
-    }
-
-    componentDidMount() {
-       window.addEventListener('resize', this.updateWindowDimensions);
-    }
-
-    componentWillUnmount() {
-      window.removeEventListener('resize', this.updateWindowDimensions);
-    }
-
-    updateWindowDimensions() {
-      this.setState({ width: window.innerWidth, height: window.innerHeight });
-    }
 
 
-    render() {
-      const rowdata = this.state.structure.rowdata;
       return (
-        isMobile || this.state.width < 600
+        isMobile || true
         ? <div>
             <Header/>
-            <Content rowdata={rowdata}/> 
+            <Content rowdata={structure.rowdata}/>
             <IconFooter/>
           </div>
         : <div>Desktop Version not yet launched. Please access on mobile or use mobile emulator in browser.</div>
         );
     }
-  }
 
   // ========================================
 

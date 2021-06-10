@@ -13,7 +13,9 @@
 	z-index: 2;
 	font-size: 25vw;
 	text-align: right;
-	width: 95vw;
+	width: 100vw;
+	background-color: darkseagreen;
+
 }
 
 .topnav {
@@ -65,18 +67,12 @@
 
 .text-pane {
 	display: flex;
-	width: 40%;
+	width: 90%;
 	padding:5%;
     height: 90%;
 }
 
-.text-pane__full {
-
-	width:90%;
-	padding: 5%;
-}
-
-.img-pane {
+.pane {
 	display: flex;
 	flex-direction: column;
     background-size: cover;
@@ -85,7 +81,7 @@
     height: 100%;
 }
 
-.img-pane__full {
+.pane__full {
 
 	width: 100%;
 }
@@ -127,8 +123,8 @@
 .fourth {
 	width:20vw;
 	height: 20vw;
-	padding-bottom:0;
-	padding-left: 4vw;
+	padding-left: 2.5vw;
+	padding-right: 2.5vw;
 }
 
 .fourth-first{
