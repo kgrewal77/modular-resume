@@ -34,7 +34,7 @@ const github = "https://github.com/kgrewal77";
   const Pane = (props) => {
 
     return (
-      <span className={props.size === 2 ? "pane" :"pane pane__full"}
+      <span className={props.size === 2 ? "parallax pane" :"parallax pane__full pane"}
             style={props.img_src && {backgroundImage:`url(${props.img_src})`}}>
         <div className="text-pane">{props.text}</div>
         {props.children}
@@ -47,8 +47,11 @@ const github = "https://github.com/kgrewal77";
   const ContentRow = (props) => {
 
     const l = props.panels.length;
+
     return (
-        <div className={`slide ${props.index === 0 ? "top-slide":" "}`}>
+        <div //className="slide" 
+        className={`${props.last ? " slide__bottom ":" "} ${props.half ? " slide__half ":" "} slide`}
+        >
           {props.panels.map((value,index) => {
                 return <Pane size={l}
                              key={index}
@@ -61,122 +64,136 @@ const github = "https://github.com/kgrewal77";
     );
   }
 
+  const Content = (props) => {
 
-class Content extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      current: 0,
-      total: props.rowdata.length,
-      top: 0,
-      originalOffset: 0,
-      velocity: 0,
-      timeOfLastDragEvent: 0,
-      touchStartY: 0,
-      prevTouchY: 0,
-      beingTouched: false,
-      height: 0,
-      intervalId: null
-    };
-  }
-
-  render() {
-    const index = this.state.current;
-    const value = this.props.rowdata[index];
+    const l = props.rowdata.length;
     return (
-      <div
-          id="content"
-          onTouchStart={touchStartEvent => this.handleTouchStart(touchStartEvent)}
-          onTouchMove={touchMoveEvent => this.handleTouchMove(touchMoveEvent)}
-          onTouchEnd={() => this.handleTouchEnd()}>
-            <ContentRow index={index} panels={value.panels}/>
+      <div id="content">
+        {props.rowdata.map((value,index) => {
+            return <ContentRow key={index} last={l-index-1 === 0} panels={value.panels} half={value.half}/>
+          })
+        }
       </div>
     );
+
   }
 
-  // animateSlidingToZero() {
-  //   let {left, velocity, beingTouched} = this.state;
-  //   if (!beingTouched && left < -0.01) {
-  //     velocity += 10 * 0.033;
-  //     left += velocity;
-  //     if (left < -350) {
-  //       window.clearInterval(this.state.intervalId);
-  //       this.handleRemoveSelf();
+
+  // class Content extends React.Component {
+  //   constructor(props) {
+  //     super(props);
+
+  //     this.state = {
+  //       current: 0,
+  //       total: props.rowdata.length,
+  //       top: 0,
+  //       originalOffset: 0,
+  //       velocity: 0,
+  //       timeOfLastDragEvent: 0,
+  //       touchStartY: 0,
+  //       prevTouchY: 0,
+  //       beingTouched: false,
+  //       height: 0,
+  //       intervalId: null
+  //     };
+  //   }
+
+  //   render() {
+  //     const index = this.state.current;
+  //     const value = this.props.rowdata[index];
+  //     return (
+  //       <div
+  //           id="content"
+  //           onTouchStart={touchStartEvent => this.handleTouchStart(touchStartEvent)}
+  //           onTouchMove={touchMoveEvent => this.handleTouchMove(touchMoveEvent)}
+  //           onTouchEnd={() => this.handleTouchEnd()}>
+  //             <ContentRow index={index} panels={value.panels}/>
+  //       </div>
+  //     );
+  //   }
+
+  //   // animateSlidingToZero() {
+  //   //   let {left, velocity, beingTouched} = this.state;
+  //   //   if (!beingTouched && left < -0.01) {
+  //   //     velocity += 10 * 0.033;
+  //   //     left += velocity;
+  //   //     if (left < -350) {
+  //   //       window.clearInterval(this.state.intervalId);
+  //   //       this.handleRemoveSelf();
+  //   //     }
+  //   //     this.setState({left, velocity});
+  //   //   } else if (!beingTouched) {
+  //   //     left = 0;
+  //   //     velocity = 0;
+  //   //     window.clearInterval(this.state.intervalId);
+  //   //     this.setState({left, velocity, intervalId: null, originalOffset: 0});
+  //   //   }
+  //   // }
+
+  //   handleSwipe(val) {
+  //     if (!(this.state.current+val < 0 || this.state.current+val > this.state.total-1)) {
+  //       this.setState({current:this.state.current+val});
   //     }
-  //     this.setState({left, velocity});
-  //   } else if (!beingTouched) {
-  //     left = 0;
-  //     velocity = 0;
-  //     window.clearInterval(this.state.intervalId);
-  //     this.setState({left, velocity, intervalId: null, originalOffset: 0});
+  //     this.handleEnd();
+  //   }
+
+  //   handleStart(clientY) {
+  //     // if (this.state.intervalId !== null) {
+  //     //   window.clearInterval(this.state.intervalId);
+  //     // }
+  //     this.setState({
+  //       originalOffset: this.state.top,
+  //       velocity: 0,
+  //       timeOfLastDragEvent: Date.now(),
+  //       touchStartY: clientY,
+  //       beingTouched: true,
+  //       intervalId: null
+  //     });
+  //   }
+
+  //   handleMove(clientY) {
+  //     if (this.state.beingTouched) {
+  //       const touchY = clientY;
+  //       const currTime = Date.now();
+  //       const elapsed = currTime - this.state.timeOfLastDragEvent;
+  //       const velocity = 20 * (touchY - this.state.prevTouchY) / elapsed;
+  //       let deltaY = touchY - this.state.touchStartY + this.state.originalOffset;
+  //       if (deltaY < -200) {
+  //         this.handleSwipe(1);
+  //       } else if (deltaY > 200) {
+  //         this.handleSwipe(-1);
+  //       }
+  //       this.setState({
+  //         left: deltaY,
+  //         velocity,
+  //         timeOfLastDragEvent: currTime,
+  //         prevtouchY: touchY
+  //       });
+  //     }
+  //   }
+
+  //   handleEnd() {
+  //     this.setState({
+  //       velocity: this.state.velocity,
+  //       touchStartY: 0,
+  //       beingTouched: false,
+  //       intervalId: null//window.setInterval(this.animateSlidingToZero.bind(this), 33)
+  //     });
+  //   }
+
+  //   handleTouchStart(touchStartEvent) {
+  //     //touchStartEvent.preventDefault();
+  //     this.handleStart(touchStartEvent.targetTouches[0].clientY);
+  //   }
+
+  //   handleTouchMove(touchMoveEvent) {
+  //     this.handleMove(touchMoveEvent.targetTouches[0].clientY);
+  //   }
+
+  //   handleTouchEnd() {
+  //     this.handleEnd();
   //   }
   // }
-
-  handleSwipe(val) {
-    if (!(this.state.current+val < 0 || this.state.current+val > this.state.total-1)) {
-      this.setState({current:this.state.current+val});
-    }
-    this.handleEnd();
-  }
-
-  handleStart(clientY) {
-    // if (this.state.intervalId !== null) {
-    //   window.clearInterval(this.state.intervalId);
-    // }
-    this.setState({
-      originalOffset: this.state.top,
-      velocity: 0,
-      timeOfLastDragEvent: Date.now(),
-      touchStartY: clientY,
-      beingTouched: true,
-      intervalId: null
-    });
-  }
-
-  handleMove(clientY) {
-    if (this.state.beingTouched) {
-      const touchY = clientY;
-      const currTime = Date.now();
-      const elapsed = currTime - this.state.timeOfLastDragEvent;
-      const velocity = 20 * (touchY - this.state.prevTouchY) / elapsed;
-      let deltaY = touchY - this.state.touchStartY + this.state.originalOffset;
-      if (deltaY < -200) {
-        this.handleSwipe(1);
-      } else if (deltaY > 200) {
-        this.handleSwipe(-1);
-      }
-      this.setState({
-        left: deltaY,
-        velocity,
-        timeOfLastDragEvent: currTime,
-        prevtouchY: touchY
-      });
-    }
-  }
-
-  handleEnd() {
-    this.setState({
-      velocity: this.state.velocity,
-      touchStartY: 0,
-      beingTouched: false,
-      intervalId: null//window.setInterval(this.animateSlidingToZero.bind(this), 33)
-    });
-  }
-
-  handleTouchStart(touchStartEvent) {
-    //touchStartEvent.preventDefault();
-    this.handleStart(touchStartEvent.targetTouches[0].clientY);
-  }
-
-  handleTouchMove(touchMoveEvent) {
-    this.handleMove(touchMoveEvent.targetTouches[0].clientY);
-  }
-
-  handleTouchEnd() {
-    this.handleEnd();
-  }
-}
 
 // Footer Components
   const LinkImage = (props) => {
@@ -284,10 +301,41 @@ class Content extends React.Component {
                 img:keyboard
               }
             ]
+          },
+          {
+            title:'workExperience',
+            half:true,
+            panels:[
+              {
+                content:aboutMe
+              },
+              {
+                content:aboutMe
+              }
+            ]
+          },{
+            title:'workExperience',
+            half:true,
+            panels:[
+              {
+                content:aboutMe
+              },
+              {
+                content:aboutMe
+              }
+            ]
+          },{
+            title:'closingCard',
+            panels:[
+              {
+                img:keyboard
+              }
+            ]
           }
         ]
       };
 
+      //console.log("is mobile? " + isMobile);
 
       return (
         isMobile || true
