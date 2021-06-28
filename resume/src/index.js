@@ -1,14 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import isMobile from 'react-device-detect';
-
+import { InView } from 'react-intersection-observer';
 import keyboard from './img/keyboard.jpg';
+import sunset from './img/sunset.jpg';
 import resume from './docs/resume.pdf';
-import linkedinIcon from './img/linkedin3.jpg'
-import emailIcon from './img/email.png'
-import downloadIcon from './img/download.png'
-import githubIcon from './img/github.png'
 
 
 // consts
@@ -19,14 +16,45 @@ const linkedin = "https://www.linkedin.com/in/kabir-grewal-9b8b8a10a";
 const github = "https://github.com/kgrewal77";
 
 
-// Header Components
+// Nav Components
 
-  const Header = () => {
+  const NavBar = (props) => {
+   // console.log(props.backcolor||'white');
      return (
-        <div className="header sticky">
-
+        <div className="navbar sticky" style={{background:`${props.backcolor||'grey'}`} }>
+          <span className="namerow"> <span className="title">RE-ZU.ME</span></span>
+          <span className="iconrow">
+              <IconLink icon="fa-download"
+                        link={resume}
+                        classes="fourth-first fourth"/>
+              <IconLink icon="fa-at"
+                         link={`mailto:${email}`}
+                         classes="fourth"/>
+              <IconLink icon="fa-github"
+                         link={github}
+                         classes="fourth"/>
+              <IconLink icon="fa-linkedin"
+                         link={linkedin}
+                         classes="fourth"/>
+          </span>
         </div>
         );
+  }
+
+  const IconLink = (props) => {
+
+    return (
+      <span className="iconcol">
+      <a href={props.link}
+          target="_blank"
+          rel="noreferrer"
+          className="iconlink" >
+        <i className={`fa icon ${props.icon} ${props.classes}`}>
+          
+        </i>
+      </a>
+      </span>
+    );
   }
 
 // Content Components
@@ -34,9 +62,9 @@ const github = "https://github.com/kgrewal77";
   const Pane = (props) => {
 
     return (
-      <span className={props.size === 2 ? "parallax pane" :"parallax pane__full pane"}
+      <span className={`pane ${props.size === 1 && 'pane__full'} ${props.img_src && 'parallax'}`}
             style={props.img_src && {backgroundImage:`url(${props.img_src})`}}>
-        <div className="text-pane">{props.text}</div>
+        {props.text && <div className="text-pane">{props.text}</div>}
         {props.children}
       </span>
 
@@ -47,213 +75,60 @@ const github = "https://github.com/kgrewal77";
   const ContentRow = (props) => {
 
     const l = props.panels.length;
-
+    //console.log(document.querySelector('div.navbar'));
     return (
-        <div //className="slide" 
-        className={`${props.last ? " slide__bottom ":" "} ${props.half ? " slide__half ":" "} slide`}
-        >
-          {props.panels.map((value,index) => {
-                return <Pane size={l}
-                             key={index}
-                             text={value.content}
-                             img_src={value.img}/>
+      <InView as="div" 
+              // threshold={[.07,.93]}
+              threshold={.035}
+              rootMargin={"-93% 0px 0px 0px"}
+              onChange={
+                (inView, entry) => {
+                  console.log(entry);
+                  //if (entry.intersectionRect.bottom === (window.innerHeight)) {
+                    //console.log(entry);
+                  if (entry.intersectionRatio > .035) {
+                    props.changeHeaderColor(props.backcolor||'white');
+                  }
+                  //}
+                }}>
+          <div //className="slide" 
+          className={`${props.last ? " slide__bottom ":" "} ${props.half ? " slide__half ":" "} slide`}
+          style={{background:`${props.backcolor||'white'}`}}
 
-          })}
-        </div>
+          >
+            {props.panels.map((value,index) => {
+                  return <Pane size={l}
+                               key={index}
+                               text={value.content}
+                               img_src={value.img}/>
+
+            })}
+          </div>
+      </InView>
 
     );
-  }
+  };
 
   const Content = (props) => {
 
     const l = props.rowdata.length;
+    const [color,setColor] = useState('white');
     return (
       <div id="content">
+        <NavBar backcolor={color}/>
         {props.rowdata.map((value,index) => {
-            return <ContentRow key={index} last={l-index-1 === 0} panels={value.panels} half={value.half}/>
+            return <ContentRow 
+              key={index} 
+              last={l-index-1 === 0} 
+              backcolor={value.backcolor} 
+              panels={value.panels} 
+              half={value.half}
+              changeHeaderColor={setColor}/>
           })
         }
       </div>
     );
 
-  }
-
-
-  // class Content extends React.Component {
-  //   constructor(props) {
-  //     super(props);
-
-  //     this.state = {
-  //       current: 0,
-  //       total: props.rowdata.length,
-  //       top: 0,
-  //       originalOffset: 0,
-  //       velocity: 0,
-  //       timeOfLastDragEvent: 0,
-  //       touchStartY: 0,
-  //       prevTouchY: 0,
-  //       beingTouched: false,
-  //       height: 0,
-  //       intervalId: null
-  //     };
-  //   }
-
-  //   render() {
-  //     const index = this.state.current;
-  //     const value = this.props.rowdata[index];
-  //     return (
-  //       <div
-  //           id="content"
-  //           onTouchStart={touchStartEvent => this.handleTouchStart(touchStartEvent)}
-  //           onTouchMove={touchMoveEvent => this.handleTouchMove(touchMoveEvent)}
-  //           onTouchEnd={() => this.handleTouchEnd()}>
-  //             <ContentRow index={index} panels={value.panels}/>
-  //       </div>
-  //     );
-  //   }
-
-  //   // animateSlidingToZero() {
-  //   //   let {left, velocity, beingTouched} = this.state;
-  //   //   if (!beingTouched && left < -0.01) {
-  //   //     velocity += 10 * 0.033;
-  //   //     left += velocity;
-  //   //     if (left < -350) {
-  //   //       window.clearInterval(this.state.intervalId);
-  //   //       this.handleRemoveSelf();
-  //   //     }
-  //   //     this.setState({left, velocity});
-  //   //   } else if (!beingTouched) {
-  //   //     left = 0;
-  //   //     velocity = 0;
-  //   //     window.clearInterval(this.state.intervalId);
-  //   //     this.setState({left, velocity, intervalId: null, originalOffset: 0});
-  //   //   }
-  //   // }
-
-  //   handleSwipe(val) {
-  //     if (!(this.state.current+val < 0 || this.state.current+val > this.state.total-1)) {
-  //       this.setState({current:this.state.current+val});
-  //     }
-  //     this.handleEnd();
-  //   }
-
-  //   handleStart(clientY) {
-  //     // if (this.state.intervalId !== null) {
-  //     //   window.clearInterval(this.state.intervalId);
-  //     // }
-  //     this.setState({
-  //       originalOffset: this.state.top,
-  //       velocity: 0,
-  //       timeOfLastDragEvent: Date.now(),
-  //       touchStartY: clientY,
-  //       beingTouched: true,
-  //       intervalId: null
-  //     });
-  //   }
-
-  //   handleMove(clientY) {
-  //     if (this.state.beingTouched) {
-  //       const touchY = clientY;
-  //       const currTime = Date.now();
-  //       const elapsed = currTime - this.state.timeOfLastDragEvent;
-  //       const velocity = 20 * (touchY - this.state.prevTouchY) / elapsed;
-  //       let deltaY = touchY - this.state.touchStartY + this.state.originalOffset;
-  //       if (deltaY < -200) {
-  //         this.handleSwipe(1);
-  //       } else if (deltaY > 200) {
-  //         this.handleSwipe(-1);
-  //       }
-  //       this.setState({
-  //         left: deltaY,
-  //         velocity,
-  //         timeOfLastDragEvent: currTime,
-  //         prevtouchY: touchY
-  //       });
-  //     }
-  //   }
-
-  //   handleEnd() {
-  //     this.setState({
-  //       velocity: this.state.velocity,
-  //       touchStartY: 0,
-  //       beingTouched: false,
-  //       intervalId: null//window.setInterval(this.animateSlidingToZero.bind(this), 33)
-  //     });
-  //   }
-
-  //   handleTouchStart(touchStartEvent) {
-  //     //touchStartEvent.preventDefault();
-  //     this.handleStart(touchStartEvent.targetTouches[0].clientY);
-  //   }
-
-  //   handleTouchMove(touchMoveEvent) {
-  //     this.handleMove(touchMoveEvent.targetTouches[0].clientY);
-  //   }
-
-  //   handleTouchEnd() {
-  //     this.handleEnd();
-  //   }
-  // }
-
-// Footer Components
-  const LinkImage = (props) => {
-
-    return (
-      <a href={props.link}
-          target="_blank"
-          rel="noreferrer" >
-        <img src={props.image_src}
-             alt={props.image_alt}
-             className={props.classes}>
-        </img>
-      </a>
-    );
-  }
-
-  const IconFooter = (props) => {
-
-    //const [expanded, setExpanded] = useState(props.expanded);
-
-    // const handleClickOutside = event => {
-    //     const domNode = ReactDOM.findDOMNode(this);
-
-    //     if ((!domNode || !domNode.contains(event.target)) && expanded) {
-    //         setExpanded(!expanded)
-    //     }
-    // }
-
-    // useEffect(()=>{
-    //   document.addEventListener('click', handleClickOutside, true);
-    //   document.addEventListener('touchstart', handleClickOutside, true);
-    //   return () => {
-    //     document.removeEventListener('click', handleClickOutside, true);
-    //     document.removeEventListener('touchstart', handleClickOutside, true);
-    //   };
-    // },[handleClickOutside])
-
-
-    return (
-        <div className="icon-footer">
-              <LinkImage image_src={downloadIcon}
-                         image_alt="download logo"
-                         link={resume}
-                         classes="fourth-first fourth"/>
-              <LinkImage image_src={emailIcon}
-                         image_alt="gmail logo"
-                         link={`mailto:${email}`}
-                         classes="fourth"/>
-              <LinkImage image_src={githubIcon}
-                         image_alt="github logo"
-                         link={github}
-                         classes="fourth"/>
-              <LinkImage image_src={linkedinIcon}
-                         image_alt="linkedin logo"
-                         link={linkedin}
-                         classes="fourth"/>
-          </div>
-
-
-    );
   }
 
 
@@ -266,10 +141,8 @@ const github = "https://github.com/kgrewal77";
         rowdata: [
           {
             title:'aboutMe',
+            backcolor: 'transparent',
             panels:[
-              {
-                content:aboutMe
-              },
               {
                 img:keyboard,
               }
@@ -277,6 +150,7 @@ const github = "https://github.com/kgrewal77";
           },
           {
             title:'mySkills',
+            backcolor: 'white',
             panels:[
               {
                 content:aboutMe
@@ -285,6 +159,7 @@ const github = "https://github.com/kgrewal77";
           },
           {
             title:'workExperience',
+            backcolor: 'peachpuff',
             panels:[
               {
                 content:aboutMe
@@ -296,6 +171,7 @@ const github = "https://github.com/kgrewal77";
           },
           {
             title:'closingCard',
+            backcolor: 'transparent',
             panels:[
               {
                 img:keyboard
@@ -313,7 +189,7 @@ const github = "https://github.com/kgrewal77";
                 content:aboutMe
               }
             ]
-          },{
+          },/*{
             title:'workExperience',
             half:true,
             panels:[
@@ -324,8 +200,9 @@ const github = "https://github.com/kgrewal77";
                 content:aboutMe
               }
             ]
-          },{
+          },*/{
             title:'closingCard',
+            backcolor: 'transparent',
             panels:[
               {
                 img:keyboard
@@ -339,11 +216,8 @@ const github = "https://github.com/kgrewal77";
 
       return (
         isMobile || true
-        ? <div>
-            <Header/>
+        ? 
             <Content rowdata={structure.rowdata}/>
-            <IconFooter/>
-          </div>
         : <div>Desktop Version not yet launched. Please access on mobile or use mobile emulator in browser.</div>
         );
     }
