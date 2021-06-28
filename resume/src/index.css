@@ -2,29 +2,9 @@
 @import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css);
 /*Small devices (landscape phones, 576px and up)*/
 
-.icon-footer {
-/*	position: fixed;
-	bottom: 0;*/
-	height: 15vh;
-	z-index: 2;
-	font-size: 25vw;
-	text-align: right;
-	width: 100vw;
-	color: grey;
-/*	background-color: darkseagreen;
-*/
-}
-
 a {
-	color: grey;
-}
-
-.parallax {
-
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+	color: inherit;
+    text-decoration: none;
 }
 
 .navbar {
@@ -70,18 +50,30 @@ a {
 	width: 100%;
 }
 
-.center-of-pane {
-	display: flex;
-	flex-direction: column;
-    width: fit-content;
-    height: fit-content;
+.parallax {
+
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
-.linkedin-logo {
-    width: -webkit-fill-available;
+.box {
+	background: seagreen;
+	opacity: .7;
+	margin: 5%;
+	padding: 5%;
 }
 
+a.box:hover, a.box:active {
+	background: black;
+}
 
+.box-text {
+	color:white;
+    font-family: Lato, sans-serif;
+    font-size: 2vh;
+    line-height: 1.8;}
 
 .slide {
     display: flex;
@@ -120,7 +112,7 @@ a {
 
 .iconrow {
     align-items: center;
-display: inline-flex;
+    display: inline-flex;
 	margin-left: auto;
 }
 
@@ -131,22 +123,14 @@ display: inline-flex;
 .iconlink {
 	font-size: 100%;
     padding-right: 5%;
+    color: grey;
 }
 
 .icon {
 	font-size: 1.7em;
 }
 
-.fourth {
-	width:22%;
-/*	height: 100%;
-*//*	padding-left: ;
-*/	padding-right: 3%;
-}
 
-/*.fourth-first{
-	padding-left: 0;
-}*/
 
 #root {
 	height: 100%;

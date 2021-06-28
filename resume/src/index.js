@@ -4,7 +4,6 @@ import './index.css';
 import isMobile from 'react-device-detect';
 import { InView } from 'react-intersection-observer';
 import keyboard from './img/keyboard.jpg';
-import sunset from './img/sunset.jpg';
 import resume from './docs/resume.pdf';
 
 
@@ -22,20 +21,21 @@ const github = "https://github.com/kgrewal77";
    // console.log(props.backcolor||'white');
      return (
         <div className="navbar sticky" style={{background:`${props.backcolor||'grey'}`} }>
-          <span className="namerow"> <span className="title">RE-ZU.ME</span></span>
+          <span className="namerow"> 
+            <a href="/">
+              <span className="title">RE-ZU.ME</span>
+            </a>
+          </span>
           <span className="iconrow">
-              <IconLink icon="fa-download"
-                        link={resume}
-                        classes="fourth-first fourth"/>
               <IconLink icon="fa-at"
                          link={`mailto:${email}`}
-                         classes="fourth"/>
+                         />
               <IconLink icon="fa-github"
                          link={github}
-                         classes="fourth"/>
+                         />
               <IconLink icon="fa-linkedin"
                          link={linkedin}
-                         classes="fourth"/>
+                         />
           </span>
         </div>
         );
@@ -45,19 +45,33 @@ const github = "https://github.com/kgrewal77";
 
     return (
       <span className="iconcol">
-      <a href={props.link}
-          target="_blank"
-          rel="noreferrer"
-          className="iconlink" >
-        <i className={`fa icon ${props.icon} ${props.classes}`}>
-          
-        </i>
-      </a>
+        <a href={props.link}
+            target="_blank"
+            rel="noreferrer"
+            className="iconlink" >
+          <i className={`fa icon ${props.icon}`}>
+            
+          </i>
+        </a>
       </span>
     );
   }
 
 // Content Components
+  const Box = (props) => {
+
+    const BoxTag = props.box.href ? `a` : `div`;
+    return (
+     <BoxTag
+        className="box" 
+        style={props.box.boxStyle}
+        href={props.box.href}>
+        <span
+          className="box-text" 
+          style={props.box.textStyle}>{props.box.text}
+        </span>
+      </BoxTag> )
+  }
 
   const Pane = (props) => {
 
@@ -65,7 +79,14 @@ const github = "https://github.com/kgrewal77";
       <span className={`pane ${props.size === 1 && 'pane__full'} ${props.img_src && 'parallax'}`}
             style={props.img_src && {backgroundImage:`url(${props.img_src})`}}>
         {props.text && <div className="text-pane">{props.text}</div>}
-        {props.children}
+        {props.boxes &&
+          props.boxes.map((value,index) => {
+                  return <Box size={props.boxes.length}
+                               key={index}
+                               box={value}/>
+
+            })
+        }
       </span>
 
     );
@@ -100,7 +121,8 @@ const github = "https://github.com/kgrewal77";
                   return <Pane size={l}
                                key={index}
                                text={value.content}
-                               img_src={value.img}/>
+                               img_src={value.img}
+                               boxes={value.boxes}/>
 
             })}
           </div>
@@ -115,7 +137,7 @@ const github = "https://github.com/kgrewal77";
     const [color,setColor] = useState('white');
     return (
       <div id="content">
-        <NavBar backcolor={color}/>
+        {props.contentkey && <NavBar backcolor={color}/>}
         {props.rowdata.map((value,index) => {
             return <ContentRow 
               key={index} 
@@ -135,9 +157,12 @@ const github = "https://github.com/kgrewal77";
 // App Code
   const App = (props) => {
 
-    //const [key, setKey] = useState(window.location.pathname.substring(1));
+    const [key, setKey] = useState(window.location.pathname.substring(1));
+    console.log(key);
+    let structure;
 
-    const structure = {
+    if (!key) {
+      structure = {
         rowdata: [
           {
             title:'aboutMe',
@@ -145,79 +170,107 @@ const github = "https://github.com/kgrewal77";
             panels:[
               {
                 img:keyboard,
-              }
-            ]
-          },
-          {
-            title:'mySkills',
-            backcolor: 'white',
-            panels:[
-              {
-                content:aboutMe
-              }
-            ]
-          },
-          {
-            title:'workExperience',
-            backcolor: 'peachpuff',
-            panels:[
-              {
-                content:aboutMe
-              },
-              {
-                content:aboutMe
-              }
-            ]
-          },
-          {
-            title:'closingCard',
-            backcolor: 'transparent',
-            panels:[
-              {
-                img:keyboard
-              }
-            ]
-          },
-          {
-            title:'workExperience',
-            half:true,
-            panels:[
-              {
-                content:aboutMe
-              },
-              {
-                content:aboutMe
-              }
-            ]
-          },/*{
-            title:'workExperience',
-            half:true,
-            panels:[
-              {
-                content:aboutMe
-              },
-              {
-                content:aboutMe
-              }
-            ]
-          },*/{
-            title:'closingCard',
-            backcolor: 'transparent',
-            panels:[
-              {
-                img:keyboard
+                boxes:[{text:"RE-ZU.ME",
+                        textStyle:{"font-size": "8vh",
+                                   "font-family":"azonix, sans-serif"}},
+                       {text:"the simple networking solution"},
+                       {text:"see mine",href:"/kabir"},
+                       {text:"make yours",href:"/edit"}]
               }
             ]
           }
         ]
       };
 
+    } else {
+      structure = {
+          rowdata: [
+            {
+              title:'aboutMe',
+              backcolor: 'transparent',
+              panels:[
+                {
+                  img:keyboard,
+                  boxes:[{text:"Kabir Grewal",
+                        textStyle:{"font-size": "10vh",
+                                   "font-family":"azonix, sans-serif"}},
+                       {text:"software engineer"}]
+                       // {text:"see mine",href:"/kabir"},
+                       // {text:"make yours",href:"/edit"}]
+                }
+              ]
+            },
+            {
+              title:'mySkills',
+              backcolor: 'white',
+              panels:[
+                {
+                  content:aboutMe
+                }
+              ]
+            },
+            {
+              title:'workExperience',
+              backcolor: 'peachpuff',
+              panels:[
+                {
+                  content:aboutMe
+                },
+                {
+                  content:aboutMe
+                }
+              ]
+            },
+            {
+              title:'closingCard',
+              backcolor: 'transparent',
+              panels:[
+                {
+                  img:keyboard
+                }
+              ]
+            },
+            {
+              title:'workExperience',
+              half:true,
+              panels:[
+                {
+                  content:aboutMe
+                },
+                {
+                  content:aboutMe
+                }
+              ]
+            },/*{
+              title:'workExperience',
+              half:true,
+              panels:[
+                {
+                  content:aboutMe
+                },
+                {
+                  content:aboutMe
+                }
+              ]
+            },*/{
+              title:'closingCard',
+              backcolor: 'transparent',
+              panels:[
+                {
+                  img:keyboard
+                }
+              ]
+            }
+          ]
+        };
+    }
+
       //console.log("is mobile? " + isMobile);
 
       return (
         isMobile || true
         ? 
-            <Content rowdata={structure.rowdata}/>
+            <Content contentkey={key} rowdata={structure.rowdata}/>
         : <div>Desktop Version not yet launched. Please access on mobile or use mobile emulator in browser.</div>
         );
     }
