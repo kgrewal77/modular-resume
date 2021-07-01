@@ -1,15 +1,17 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
+import DOMPurify from 'dompurify'
 import './index.css';
-import isMobile from 'react-device-detect';
 import { InView } from 'react-intersection-observer';
 import keyboard from './img/keyboard.jpg';
-import resume from './docs/resume.pdf';
+import circuit from './img/circuit_blue_half.jpg';
+import suit from './img/suit.png';
+import rezume from './img/rezume.PNG';
+
 
 
 // consts
 
-const aboutMe = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 const email = "kgrewal7777@gmail.com";
 const linkedin = "https://www.linkedin.com/in/kabir-grewal-9b8b8a10a";
 const github = "https://github.com/kgrewal77";
@@ -54,8 +56,8 @@ const github = "https://github.com/kgrewal77";
           </i>
         </a>
       </span>
-    );
-  }
+      );
+    }
 
 // Content Components
   const Box = (props) => {
@@ -78,7 +80,13 @@ const github = "https://github.com/kgrewal77";
     return (
       <span className={`pane ${props.size === 1 && 'pane__full'} ${props.img_src && 'parallax'}`}
             style={props.img_src && {backgroundImage:`url(${props.img_src})`}}>
-        {props.text && <div className="text-pane">{props.text}</div>}
+        {props.text ? 
+          <p className="text-pane" 
+             style={{"textAlign":`${props.align?props.align:'default'}`}}
+             dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(props.text)}}>
+          </p>
+         :<div className="img-pane"></div>
+        }
         {props.boxes &&
           props.boxes.map((value,index) => {
                   return <Box size={props.boxes.length}
@@ -96,7 +104,7 @@ const github = "https://github.com/kgrewal77";
   const ContentRow = (props) => {
 
     const l = props.panels.length;
-    //console.log(document.querySelector('div.navbar'));
+
     return (
       <InView as="div" 
               // threshold={[.07,.93]}
@@ -104,27 +112,30 @@ const github = "https://github.com/kgrewal77";
               rootMargin={"-93% 0px 0px 0px"}
               onChange={
                 (inView, entry) => {
-                  console.log(entry);
+                  //console.log(entry);
                   //if (entry.intersectionRect.bottom === (window.innerHeight)) {
                     //console.log(entry);
                   if (entry.intersectionRatio > .035) {
-                    props.changeHeaderColor(props.backcolor||'white');
+                    props.changeHeaderColor(props.navcolor||'white');
                   }
                   //}
                 }}>
           <div //className="slide" 
-          className={`${props.last ? " slide__bottom ":" "} ${props.half ? " slide__half ":" "} slide`}
-          style={{background:`${props.backcolor||'white'}`}}
-
-          >
+          className={`${props.last  ? " slide__bottom ":""} 
+                      ${props.size === 'full' ? " slide__full ":""} 
+                      ${props.size === 'half' ? " slide__half ":""} 
+                      slide`}
+          style={{background:`${props.backcolor||'white'}`}}>
             {props.panels.map((value,index) => {
-                  return <Pane size={l}
-                               key={index}
-                               text={value.content}
-                               img_src={value.img}
-                               boxes={value.boxes}/>
+                        return <Pane size={l}
+                                     key={index}
+                                     text={value.content}
+                                     align={value.align}
+                                     img_src={value.img}
+                                     boxes={value.boxes}/>
 
-            })}
+                  })
+            }
           </div>
       </InView>
 
@@ -137,14 +148,15 @@ const github = "https://github.com/kgrewal77";
     const [color,setColor] = useState('white');
     return (
       <div id="content">
-        {props.contentkey && <NavBar backcolor={color}/>}
+        {props.contentkey!=='home' && <NavBar backcolor={color}/>}
         {props.rowdata.map((value,index) => {
             return <ContentRow 
               key={index} 
-              last={l-index-1 === 0} 
+              last={l-index-1 === 0 && l>1} 
               backcolor={value.backcolor} 
+              navcolor={value.navcolor || value.backcolor}
               panels={value.panels} 
-              half={value.half}
+              size={value.size}
               changeHeaderColor={setColor}/>
           })
         }
@@ -157,24 +169,24 @@ const github = "https://github.com/kgrewal77";
 // App Code
   const App = (props) => {
 
-    const [key, setKey] = useState(window.location.pathname.substring(1));
-    console.log(key);
+    const key = window.location.pathname.substring(1);
     let structure;
 
-    if (!key) {
+    if (key==='home') {
       structure = {
         rowdata: [
           {
             title:'aboutMe',
             backcolor: 'transparent',
+            size:'full',
             panels:[
               {
                 img:keyboard,
                 boxes:[{text:"RE-ZU.ME",
-                        textStyle:{"font-size": "8vh",
-                                   "font-family":"azonix, sans-serif"}},
+                        textStyle:{"fontSize": "8vh",
+                                   "fontFamily":"azonix, sans-serif"}},
                        {text:"the simple networking solution"},
-                       {text:"see mine",href:"/kabir"},
+                       {text:"see mine",href:"/"},
                        {text:"make yours",href:"/edit"}]
               }
             ]
@@ -188,76 +200,88 @@ const github = "https://github.com/kgrewal77";
             {
               title:'aboutMe',
               backcolor: 'transparent',
+              size: 'full',
               panels:[
                 {
                   img:keyboard,
                   boxes:[{text:"Kabir Grewal",
-                        textStyle:{"font-size": "10vh",
-                                   "font-family":"azonix, sans-serif"}},
+                        textStyle:{"fontSize": "10vh",
+                                   "fontFamily":"azonix, sans-serif"}},
                        {text:"software engineer"}]
-                       // {text:"see mine",href:"/kabir"},
-                       // {text:"make yours",href:"/edit"}]
+                       // #2A4172 100%
                 }
               ]
             },
             {
-              title:'mySkills',
+              title:'summary',
+             backcolor:'linear-gradient(0deg,   rgba(255,255,255,1) 0%, rgba(227,218,197,1) 100%)',
+              navcolor:'white',
+              
+              panels:[
+                {
+                  content:"<div><h1>about me</h1>Software Engineer with 4 years of work experience. Quickly adapts to new environments and tech stacks. Experience with Web Development as well as DevOps engineering. Creative problem-solver who can work independently or collaborate with a team. Seeking employment opportunities that feature continually improving development philosophy and opportunities to engage with emerging technologies.</div>"
+                }
+              ]
+            },
+            {
+              title:'tech',
+              navcolor: 'white',
+              backcolor: 'linear-gradient(10deg, #405883 0%,  #B0CCDC 50%, #FFFFFF 100%)', 
+              panels:[
+                {img:circuit},
+                {
+                  content:`
+                  <div><h1>tech</h1> <b><ul>
+                    <li>React</li>
+                    <li>Angular</li>
+                    <li>Node</li>
+                    <li>JS+HTML+CSS</li>
+                    <li>AWS</li>
+                    <li>NGINX</li>
+                  </b></ul></div>`
+                }
+              ]
+            },
+            { title:'work',
+              navcolor: '#B0CCDC',
+              backcolor: 'linear-gradient(190deg, #405883 0%,  #B0CCDC 50%, #FFFFFF 100%)', 
+              panels:[
+              {
+                  content:`
+                  <div><h1>work</h1> <b><ul>
+                    <li>Deloitte CBO</li>
+                    <li>CGI Canada</li>
+                    <li>Viryl Technologies</li>
+                    <li>Bonfire Interactive</li>
+                  </b></ul></div>`
+                },
+                {img:suit}]},
+            {title:'projectHeader',
+             backcolor:'white',
+             panels:[{content:`<h1>projects</h1>`}]
+           },            
+
+
+             {title:'rezume',
+              backcolor: 'transparent',
+              size: 'half',
+              panels:[{img:rezume}]
+            },
+            {title:'rezume-desc',
               backcolor: 'white',
-              panels:[
-                {
-                  content:aboutMe
-                }
-              ]
+              panels:[{align:'center',content:`<div><h1>REZUME</h1>Write your resume using markup <br> See it rendered stylishly <br> Host it online <br> Built using React, Node, and MongoDB</div>`}]
             },
-            {
-              title:'workExperience',
-              backcolor: 'peachpuff',
-              panels:[
-                {
-                  content:aboutMe
-                },
-                {
-                  content:aboutMe
-                }
-              ]
-            },
+            {title:'projectFooter',
+             backcolor:'linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(227,218,197,1) 100%)',
+             navcolor:'white',
+             panels:[{content:`<h1>...</h1>`}]},
             {
               title:'closingCard',
-              backcolor: 'transparent',
+              backcolor: 'rgba(227,218,197,1)',
               panels:[
                 {
-                  img:keyboard
-                }
-              ]
-            },
-            {
-              title:'workExperience',
-              half:true,
-              panels:[
-                {
-                  content:aboutMe
-                },
-                {
-                  content:aboutMe
-                }
-              ]
-            },/*{
-              title:'workExperience',
-              half:true,
-              panels:[
-                {
-                  content:aboutMe
-                },
-                {
-                  content:aboutMe
-                }
-              ]
-            },*/{
-              title:'closingCard',
-              backcolor: 'transparent',
-              panels:[
-                {
-                  img:keyboard
+                  // img:keyboard,
+                  content:["<h1>thanks for your time!"]
                 }
               ]
             }
@@ -268,10 +292,10 @@ const github = "https://github.com/kgrewal77";
       //console.log("is mobile? " + isMobile);
 
       return (
-        isMobile || true
-        ? 
+        // isMobile || true
+        // ? 
             <Content contentkey={key} rowdata={structure.rowdata}/>
-        : <div>Desktop Version not yet launched. Please access on mobile or use mobile emulator in browser.</div>
+        // : <div>Desktop Version not yet launched. Please access on mobile or use mobile emulator in browser.</div>
         );
     }
 
