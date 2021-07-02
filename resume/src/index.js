@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import DOMPurify from 'dompurify'
 import './index.css';
@@ -7,6 +7,14 @@ import keyboard from './img/keyboard.jpg';
 import circuit from './img/circuit_blue_half.jpg';
 import suit from './img/suit.png';
 import rezume from './img/rezume.PNG';
+import gif from './img/loader.gif';
+
+// db
+// client.connect(err => {
+//   const collection = client.db("test").collection("devices");
+//   // perform actions on the collection object
+//   client.close();
+// });
 
 
 
@@ -147,18 +155,24 @@ const github = "https://github.com/kgrewal77";
     const l = props.rowdata.length;
     const [color,setColor] = useState('white');
     return (
+
+        
+
       <div id="content">
-        {props.contentkey!=='home' && <NavBar backcolor={color}/>}
-        {props.rowdata.map((value,index) => {
-            return <ContentRow 
-              key={index} 
-              last={l-index-1 === 0 && l>1} 
-              backcolor={value.backcolor} 
-              navcolor={value.navcolor || value.backcolor}
-              panels={value.panels} 
-              size={value.size}
-              changeHeaderColor={setColor}/>
-          })
+        {props.contentkey && <NavBar backcolor={color}/>}
+        {l !== 0 ?
+          props.rowdata.map((value,index) => {
+              return <ContentRow 
+                key={index} 
+                last={l-index-1 === 0 && l>1} 
+                backcolor={value.backcolor} 
+                navcolor={value.navcolor || value.backcolor}
+                panels={value.panels} 
+                size={value.size}
+                changeHeaderColor={setColor}/>
+            })
+          
+         :<img className="loader" src={gif}/>
         }
       </div>
     );
@@ -170,133 +184,137 @@ const github = "https://github.com/kgrewal77";
   const App = (props) => {
 
     const key = window.location.pathname.substring(1);
-    let structure;
+    const [structure,setStructure] = useState({rowdata:[]});
 
-    if (key==='home') {
-      structure = {
-        rowdata: [
-          {
-            title:'aboutMe',
-            backcolor: 'transparent',
-            size:'full',
-            panels:[
-              {
-                img:keyboard,
-                boxes:[{text:"RE-ZU.ME",
-                        textStyle:{"fontSize": "8vh",
-                                   "fontFamily":"azonix, sans-serif"}},
-                       {text:"the simple networking solution"},
-                       {text:"see mine",href:"/"},
-                       {text:"make yours",href:"/edit"}]
-              }
-            ]
-          }
-        ]
-      };
+    useEffect( ()=>{
+      if (!key){
 
-    } else {
-      structure = {
+
+        setStructure({
           rowdata: [
             {
-              title:'aboutMe',
+              title:'home',
               backcolor: 'transparent',
-              size: 'full',
+              size:'full',
               panels:[
                 {
                   img:keyboard,
-                  boxes:[{text:"Kabir Grewal",
-                        textStyle:{"fontSize": "10vh",
-                                   "fontFamily":"azonix, sans-serif"}},
-                       {text:"software engineer"}]
-                       // #2A4172 100%
-                }
-              ]
-            },
-            {
-              title:'summary',
-             backcolor:'linear-gradient(0deg,   rgba(255,255,255,1) 0%, rgba(227,218,197,1) 100%)',
-              navcolor:'white',
-              
-              panels:[
-                {
-                  content:"<div><h1>about me</h1>Software Engineer with 4 years of work experience. Quickly adapts to new environments and tech stacks. Experience with Web Development as well as DevOps engineering. Creative problem-solver who can work independently or collaborate with a team. Seeking employment opportunities that feature continually improving development philosophy and opportunities to engage with emerging technologies.</div>"
-                }
-              ]
-            },
-            {
-              title:'tech',
-              navcolor: 'white',
-              backcolor: 'linear-gradient(10deg, #405883 0%,  #B0CCDC 50%, #FFFFFF 100%)', 
-              panels:[
-                {img:circuit},
-                {
-                  content:`
-                  <div><h1>tech</h1> <b><ul>
-                    <li>React</li>
-                    <li>Angular</li>
-                    <li>Node</li>
-                    <li>JS+HTML+CSS</li>
-                    <li>AWS</li>
-                    <li>NGINX</li>
-                  </b></ul></div>`
-                }
-              ]
-            },
-            { title:'work',
-              navcolor: '#B0CCDC',
-              backcolor: 'linear-gradient(190deg, #405883 0%,  #B0CCDC 50%, #FFFFFF 100%)', 
-              panels:[
-              {
-                  content:`
-                  <div><h1>work</h1> <b><ul>
-                    <li>Deloitte CBO</li>
-                    <li>CGI Canada</li>
-                    <li>Viryl Technologies</li>
-                    <li>Bonfire Interactive</li>
-                  </b></ul></div>`
-                },
-                {img:suit}]},
-            {title:'projectHeader',
-             backcolor:'white',
-             panels:[{content:`<h1>projects</h1>`}]
-           },            
-
-
-             {title:'rezume',
-              backcolor: 'transparent',
-              size: 'half',
-              panels:[{img:rezume}]
-            },
-            {title:'rezume-desc',
-              backcolor: 'white',
-              panels:[{align:'center',content:`<div><h1>REZUME</h1>Write your resume using markup <br> See it rendered stylishly <br> Host it online <br> Built using React, Node, and MongoDB</div>`}]
-            },
-            {title:'projectFooter',
-             backcolor:'linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(227,218,197,1) 100%)',
-             navcolor:'white',
-             panels:[{content:`<h1>...</h1>`}]},
-            {
-              title:'closingCard',
-              backcolor: 'rgba(227,218,197,1)',
-              panels:[
-                {
-                  // img:keyboard,
-                  content:["<h1>thanks for your time!"]
+                  boxes:[{text:"RE-ZU.ME",
+                          textStyle:{"fontSize": "8vh",
+                                     "fontFamily":"azonix, sans-serif"}},
+                         {text:"the simple networking solution"},
+                         {text:"see mine",href:"/kabir"},
+                         {text:"make yours",href:"/edit"}]
                 }
               ]
             }
           ]
-        };
-    }
+        });
 
-      //console.log("is mobile? " + isMobile);
+      } else {
+        setStructure( {
+            rowdata: [
+              {
+                title:'aboutMe',
+                backcolor: 'transparent',
+                size: 'full',
+                panels:[
+                  {
+                    img:keyboard,
+                    boxes:[{text:"Kabir Grewal",
+                          textStyle:{"fontSize": "8vh",
+                                     "fontFamily":"azonix, sans-serif"},
+                          boxStyle:{background:'#2A4172'}},
+                         {text:"software engineer",boxStyle:{background:'#2A4172'},textStyle:{"fontFamily":"azonix, sans-serif"}}]
+                         // #2A4172 100%
+                  }
+                ]
+              },
+              {
+                title:'summary',
+               backcolor:'linear-gradient(0deg,   #B0CCDC 0%, #e3dac5 100%)',
+                navcolor:'#e3dac5',
+                
+                panels:[
+                  {
+                    content:"<div><h1>about me</h1>Software Engineer with 4 years of work experience. Quickly adapts to new environments and tech stacks. Experience with Web Development as well as DevOps engineering. Creative problem-solver who can work independently or collaborate with a team. Seeking employment opportunities that feature continually improving development philosophy and opportunities to engage with emerging technologies.</div>"
+                  }
+                ]
+              },
+              {
+                title:'tech',
+                backcolor: '#B0CCDC', 
+               size:'half',
+                panels:[
+                  {img:circuit},
+                  {
+                    content:`
+                    <div><h1>tech</h1> <b><ul>
+                      <li>React</li>
+                      <li>Angular</li>
+                      <li>Node</li>
+                      <li>JS+HTML+CSS</li>
+                      <li>AWS</li>
+                      <li>NGINX</li>
+                    </b></ul></div>`
+                  }
+                ]
+              },
+              { title:'work',
+               backcolor:'linear-gradient(180deg, #B0CCDC 0%, #fcfcf2 100%)',
+               size:'half',
+               navcolor:'white',
+                panels:[
+                {
+                    content:`
+                    <div><h1>work</h1> <b><ul>
+                      <li>Deloitte CBO</li>
+                      <li>CGI Canada</li>
+                      <li>Viryl Technologies</li>
+                      <li>Bonfire Interactive</li>
+                    </b></ul></div>`
+                  },
+                  {img:suit}]},
+              {title:'projectHeader',
+               backcolor:'#fcfcf2',
+               panels:[{content:`<h1>projects</h1>`}]
+             },            
 
-      return (
-        // isMobile || true
-        // ? 
-            <Content contentkey={key} rowdata={structure.rowdata}/>
-        // : <div>Desktop Version not yet launched. Please access on mobile or use mobile emulator in browser.</div>
-        );
+
+               {title:'rezume',
+                backcolor: 'transparent',
+                size: 'half',
+                panels:[{img:rezume}]
+              },
+              {title:'rezume-desc',
+                size: 'half',
+                backcolor: '#fcfcf2',
+                panels:[{align:'center',content:`<div><h1>REZUME</h1>Write your resume using markup <br> See it rendered stylishly <br> Host it online <br> Built using React, Node, and MongoDB</div>`}]
+              },
+              {title:'projectFooter',
+               backcolor:'linear-gradient(180deg, #fcfcf2 0%, #e3dac5 100%)',
+               navcolor:'white',
+               panels:[{content:`<h1>...</h1>`}]},
+              {
+                title:'closingCard',
+                backcolor: '#e3dac5',
+                panels:[
+                  {
+                    // img:keyboard,
+                    content:["<h1>thanks for your time!"]
+                  }
+                ]
+              }
+            ]
+          });
+      }
+    
+    } ,[key,setStructure]);
+
+    return (
+
+          <Content contentkey={key} rowdata={structure.rowdata}/>
+      );
     }
 
   // ========================================
