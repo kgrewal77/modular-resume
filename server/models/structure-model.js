@@ -4,7 +4,7 @@ const Schema = mongoose.Schema
 const Structure = new Schema(
     {
         key: { type: String, required: true },
-        time: { type: Array, required: true },
+        rowdata: { type: Array, required: true },
 
     },
     { timestamps: true, collection:'structure'},
