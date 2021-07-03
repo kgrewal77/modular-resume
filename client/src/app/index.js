@@ -1,9 +1,10 @@
 import React, {useState,useEffect} from 'react';
 import DOMPurify from 'dompurify'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { InView } from 'react-intersection-observer';
 
 import '../style/index.css';
+import "../style/prism.css";
+
 
 import {
     insertStructure,
@@ -37,16 +38,28 @@ const github = "https://github.com/kgrewal77";
 
 // Nav Components
 
+  const EditBtn = (props) => {
+
+    return <span className="iconcol edit-icon">
+          <i onClick={()=>{props.setEdit(!props.edit)}} 
+             className={`fa icon ${props.edit? 'fa-eye' : 'fa-pencil-square-o'} `}>
+            
+          </i>
+      </span>;
+  }
+
   const NavBar = (props) => {
    // console.log(props.backcolor||'white');
      return (
-        <div className="navbar sticky" style={{background:`${props.backcolor||'grey'}`} }>
+        <div className="navbar sticky" style={{color:`${props.textColor||'#1D1D29'}`,background:`${props.backcolor||'grey'}`} }>
           <span className="namerow"> 
             <a href="/">
               <span className="title">RE-ZU.ME</span>
             </a>
+            
           </span>
           <span className="iconrow">
+              <EditBtn edit={props.edit} setEdit={props.setEdit}/>
               <IconLink icon="fa-at"
                          link={`mailto:${email}`}
                          />
@@ -85,7 +98,8 @@ const github = "https://github.com/kgrewal77";
      <BoxTag
         className="box" 
         style={props.box.boxStyle}
-        href={props.box.href}>
+        href={props.box.href}
+        target={props.box.target || '_self'}>
         <span
           className="box-text" 
           style={props.box.textStyle}>{props.box.text}
@@ -95,9 +109,18 @@ const github = "https://github.com/kgrewal77";
 
   const Pane = (props) => {
 
+    let a;
+    switch(props.img_src) {
+      case '../img/circuit_blue_half.jpg': a=circuit; break;
+      case '../img/suit.png': a=suit; break;
+      case '../img/rezume.PNG': a=rezume; break;
+      case '../img/keyboard.jpg': a=keyboard; break;
+      default: a=props.img_src;
+    }
+
     return (
-      <span className={`pane ${props.size === 1 && 'pane__full'} ${props.img_src && 'parallax'}`}
-            style={props.img_src && {backgroundImage:`url(${props.img_src})`}}>
+      <span className={`pane ${props.size === 1 && 'pane__full'} ${a && 'parallax'}`}
+            style={a && {backgroundImage:`url(${a})`}}>
         {props.text ? 
           <p className="text-pane" 
              style={{"textAlign":`${props.align?props.align:'default'}`}}
@@ -160,35 +183,58 @@ const github = "https://github.com/kgrewal77";
     );
   };
 
+  const Editor = (props) => {
+
+    let struct = JSON.stringify(props.rowdata,null,2);
+    return (
+      <div className="editor">
+        <div className="edit-area">
+          <pre>
+            <code className="language-json5" contentEditable="true">
+            {struct}
+            </code>
+          </pre>
+        </div>
+      </div>);
+    // const[struct, setStruct] = useState({key="",rowdata=props.rowdata});
+  }
+
   const Content = (props) => {
     let l = 0;
     if (props.rowdata) {
       l = props.rowdata.length;
     }
+
     const [color,setColor] = useState('white');
-    return (
 
-        
+    if (props.edit){
 
-      <div id="content">
-        {props.contentkey && <NavBar backcolor={color}/>}
-        {l !== 0 ?
-          props.rowdata.map((value,index) => {
-              return <ContentRow 
-                key={index} 
-                last={l-index-1 === 0 && l>1} 
-                backcolor={value.backcolor} 
-                navcolor={value.navcolor || value.backcolor}
-                panels={value.panels} 
-                size={value.size}
-                changeHeaderColor={setColor}/>
-            })
-          
-         :<img className="loader" src={gif} alt="spinner"/>
-        }
-      </div>
-    );
-
+      return (
+      <div>
+          <NavBar textColor={'darkgoldenrod'} edit={props.edit} setEdit={props.setEdit} backcolor={'#1D1D29'}/>
+          <Editor rowdata={props.rowdata}/>
+      </div>);
+    } else {
+      return (
+        <div className="content">
+          {props.contentkey && <NavBar edit={props.edit} setEdit={props.setEdit} backcolor={color}/>}
+          {l !== 0 ?
+            props.rowdata.map((value,index) => {
+                return <ContentRow 
+                  key={index} 
+                  last={l-index-1 === 0 && l>1} 
+                  backcolor={value.backcolor} 
+                  navcolor={value.navcolor || value.backcolor}
+                  panels={value.panels} 
+                  size={value.size}
+                  changeHeaderColor={setColor}/>
+              })
+            
+           :<img className="loader" src={gif} alt="spinner"/>
+          }
+        </div>
+      );
+    }
   }
 
 
@@ -197,132 +243,13 @@ const github = "https://github.com/kgrewal77";
 
     const key = window.location.pathname.substring(1);
     const [structure,setStructure] = useState({rowdata:[]});
+    const [edit,setEdit] = useState(false);
     console.log(key);
     useEffect( ()=>{
-      // if (!key){
 
-
-      //   setStructure({
-      //     rowdata: [
-      //       {
-      //         title:'home',
-      //         backcolor: 'transparent',
-      //         size:'full',
-      //         panels:[
-      //           {
-      //             img:keyboard,
-      //             boxes:[{text:"RE-ZU.ME",
-      //                     textStyle:{"fontSize": "8vh",
-      //                                "fontFamily":"azonix, sans-serif"}},
-      //                    {text:"the simple networking solution"},
-      //                    {text:"see mine",href:"/kabir"},
-      //                    {text:"make yours",href:"/edit"}]
-      //           }
-      //         ]
-      //       }
-      //     ]
-      //   });
-
-      // } else {
-      //   setStructure( {
-      //       rowdata: [
-      //         {
-      //           title:'aboutMe',
-      //           backcolor: 'transparent',
-      //           size: 'full',
-      //           panels:[
-      //             {
-      //               img:keyboard,
-      //               boxes:[{text:"Kabir Grewal",
-      //                     textStyle:{"fontSize": "8vh",
-      //                                "fontFamily":"azonix, sans-serif"},
-      //                     boxStyle:{background:'#2A4172'}},
-      //                    {text:"software engineer",boxStyle:{background:'#2A4172'},textStyle:{"fontFamily":"azonix, sans-serif"}}]
-      //                    // #2A4172 100%
-      //             }
-      //           ]
-      //         },
-      //         {
-      //           title:'summary',
-      //          backcolor:'linear-gradient(0deg,   #B0CCDC 0%, #e3dac5 100%)',
-      //           navcolor:'#e3dac5',
-                
-      //           panels:[
-      //             {
-      //               content:"<div><h1>about me</h1>Software Engineer with 4 years of work experience. Quickly adapts to new environments and tech stacks. Experience with Web Development as well as DevOps engineering. Creative problem-solver who can work independently or collaborate with a team. Seeking employment opportunities that feature continually improving development philosophy and opportunities to engage with emerging technologies.</div>"
-      //             }
-      //           ]
-      //         },
-      //         {
-      //           title:'tech',
-      //           backcolor: '#B0CCDC', 
-      //          size:'half',
-      //           panels:[
-      //             {img:circuit},
-      //             {
-      //               content:`
-      //               <div><h1>tech</h1> <b><ul>
-      //                 <li>React</li>
-      //                 <li>Angular</li>
-      //                 <li>Node</li>
-      //                 <li>JS+HTML+CSS</li>
-      //                 <li>AWS</li>
-      //                 <li>NGINX</li>
-      //               </b></ul></div>`
-      //             }
-      //           ]
-      //         },
-      //         { title:'work',
-      //          backcolor:'linear-gradient(180deg, #B0CCDC 0%, #fcfcf2 100%)',
-      //          size:'half',
-      //          navcolor:'white',
-      //           panels:[
-      //           {
-      //               content:`
-      //               <div><h1>work</h1> <b><ul>
-      //                 <li>Deloitte CBO</li>
-      //                 <li>CGI Canada</li>
-      //                 <li>Viryl Technologies</li>
-      //                 <li>Bonfire Interactive</li>
-      //               </b></ul></div>`
-      //             },
-      //             {img:suit}]},
-      //         {title:'projectHeader',
-      //          backcolor:'#fcfcf2',
-      //          panels:[{content:`<h1>projects</h1>`}]
-      //        },            
-
-
-      //          {title:'rezume',
-      //           backcolor: 'transparent',
-      //           size: 'half',
-      //           panels:[{img:rezume}]
-      //         },
-      //         {title:'rezume-desc',
-      //           size: 'half',
-      //           backcolor: '#fcfcf2',
-      //           panels:[{align:'center',content:`<div><h1>REZUME</h1>Write your resume using markup <br> See it rendered stylishly <br> Host it online <br> Built using React, Node, and MongoDB</div>`}]
-      //         },
-      //         {title:'projectFooter',
-      //          backcolor:'linear-gradient(180deg, #fcfcf2 0%, #e3dac5 100%)',
-      //          navcolor:'white',
-      //          panels:[{content:`<h1>...</h1>`}]},
-      //         {
-      //           title:'closingCard',
-      //           backcolor: '#e3dac5',
-      //           panels:[
-      //             {
-      //               // img:keyboard,
-      //               content:["<h1>thanks for your time!"]
-      //             }
-      //           ]
-      //         }
-      //       ]
-      //     });
-      // }
       getStructureByKey(key || 'home').then(res => {
         if (!res.data.success) {
-          console.log('oh no');
+          //console.log('oh no');
           return;
         }
         setStructure(res.data.data);
@@ -332,7 +259,7 @@ const github = "https://github.com/kgrewal77";
 
     return (
 
-          <Content contentkey={key} rowdata={structure.rowdata}/>
+          <Content edit={edit} setEdit={setEdit} contentkey={key} rowdata={structure.rowdata}/>
       );
     }
 
