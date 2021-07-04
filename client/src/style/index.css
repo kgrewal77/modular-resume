@@ -12,6 +12,10 @@ h1 {
 	margin-top: 0px;
 }
 
+[contenteditable]:focus {
+    outline: 0px solid transparent;
+}
+
 .loader {
 	width: 100vw;
 	position: absolute;
@@ -52,6 +56,10 @@ h1 {
     overflow: scroll;
     margin-left: 5vw;
     margin-right: 5vw;
+ }
+
+ .content {
+ 	overflow-y: hidden;
  }
 
 .text-pane {

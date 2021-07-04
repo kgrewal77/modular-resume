@@ -42,7 +42,35 @@ const github = "https://github.com/kgrewal77";
 
     return <span className="iconcol edit-icon">
           <i onClick={()=>{props.setEdit(!props.edit)}} 
-             className={`fa icon ${props.edit? 'fa-eye' : 'fa-pencil-square-o'} `}>
+             className={`fa icon ${props.edit? 'fa-undo' : 'fa-pencil-square-o'} `}>
+            
+          </i>
+      </span>;
+  }
+
+  const SaveBtn = (props) => {
+
+    return <span className="iconcol save-icon">
+          <i onClick={()=>{
+
+            let j;
+            try {
+              console.log(props.rowtext);
+              j = JSON.parse(props.rowtext);
+              console.log(j);
+              try {
+                updateStructureByKey(props.structkey,{"rowdata":j});
+                props.setEdit(!props.edit);
+                window.location.reload(true);
+              } catch (e) {
+                alert("update failed");
+                console.log(e);
+              }
+            } catch (e) {
+              alert("invalid json");
+            }
+          }} 
+             className={`fa icon fa-save`}>
             
           </i>
       </span>;
@@ -50,6 +78,7 @@ const github = "https://github.com/kgrewal77";
 
   const NavBar = (props) => {
    // console.log(props.backcolor||'white');
+     // console.log(props);
      return (
         <div className="navbar sticky" style={{color:`${props.textColor||'#1D1D29'}`,background:`${props.backcolor||'grey'}`} }>
           <span className="namerow"> 
@@ -59,16 +88,22 @@ const github = "https://github.com/kgrewal77";
             
           </span>
           <span className="iconrow">
-              <EditBtn edit={props.edit} setEdit={props.setEdit}/>
-              <IconLink icon="fa-at"
-                         link={`mailto:${email}`}
-                         />
-              <IconLink icon="fa-github"
-                         link={github}
-                         />
-              <IconLink icon="fa-linkedin"
-                         link={linkedin}
-                         />
+            <EditBtn edit={props.edit} setEdit={props.setEdit}/>
+            {props.edit ?
+              <SaveBtn structkey={props.structkey} rowtext={props.rowtext} setEdit={props.setEdit}/> :
+              <React.Fragment>
+                <IconLink icon="fa-at"
+                           link={`mailto:${email}`}
+                           />
+                <IconLink icon="fa-github"
+                           link={github}
+                           />
+                <IconLink icon="fa-linkedin"
+                           link={linkedin}
+                           />
+              </React.Fragment>
+
+              }
           </span>
         </div>
         );
@@ -185,13 +220,32 @@ const github = "https://github.com/kgrewal77";
 
   const Editor = (props) => {
 
-    let struct = JSON.stringify(props.rowdata,null,2);
+
     return (
       <div className="editor">
+
         <div className="edit-area">
           <pre>
-            <code className="language-json5" contentEditable="true">
-            {struct}
+            <code onBlur={(e)=>{ 
+                var map = {
+                  '&amp;': '&',
+                  '&lt;':'<',
+                  '&gt;':'>',
+                  '&quot;':'"',
+                  '&#039;':"'" 
+                };
+                console.log(e.target);
+                props.setRowText(e.target.innerHTML
+                    .replace(/&amp;/g,'&')
+                    .replace(/&lt;/g,'<')
+                    .replace(/&gt;/g,'>')
+                    .replace(/&quot;/g,'"')
+                    .replace(/&#039;/g,"'")
+
+                    );
+              }}  
+                  contentEditable="true">
+            {props.rowtext}
             </code>
           </pre>
         </div>
@@ -206,18 +260,37 @@ const github = "https://github.com/kgrewal77";
     }
 
     const [color,setColor] = useState('white');
+    const [rowtext,setRowText] = useState('[]');
+
+
+    useEffect(()=>{
+        setRowText(JSON.stringify(props.rowdata,null,2))
+      }
+    ,[props.rowdata]);
+
+
 
     if (props.edit){
 
       return (
       <div>
-          <NavBar textColor={'darkgoldenrod'} edit={props.edit} setEdit={props.setEdit} backcolor={'#1D1D29'}/>
-          <Editor rowdata={props.rowdata}/>
+          <NavBar textColor={'darkgoldenrod'} 
+                  edit={props.edit} 
+                  setEdit={props.setEdit} 
+                  backcolor={'#1D1D29'}
+                  structkey={props.contentkey} 
+                  rowtext={rowtext} 
+                  />
+          <Editor rowtext={rowtext} setRowText={setRowText} />
       </div>);
     } else {
       return (
         <div className="content">
-          {props.contentkey && <NavBar edit={props.edit} setEdit={props.setEdit} backcolor={color}/>}
+          {props.contentkey && <NavBar structkey={props.contentkey} 
+                                       rowtext={rowtext} 
+                                       edit={props.edit} 
+                                       setEdit={props.setEdit} 
+                                       backcolor={color}/>}
           {l !== 0 ?
             props.rowdata.map((value,index) => {
                 return <ContentRow 
@@ -244,7 +317,7 @@ const github = "https://github.com/kgrewal77";
     const key = window.location.pathname.substring(1);
     const [structure,setStructure] = useState({rowdata:[]});
     const [edit,setEdit] = useState(false);
-    console.log(key);
+    //console.log(key);
     useEffect( ()=>{
 
       getStructureByKey(key || 'home').then(res => {

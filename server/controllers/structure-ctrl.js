@@ -63,9 +63,7 @@ updateStructure = async (req, res) => {
                 message: 'Structure not found!',
             })
         }
-        structure.name = body.name
-        structure.time = body.time
-        structure.rating = body.rating
+        structure.rowdata = body.rowdata;
         structure
             .save()
             .then(() => {
