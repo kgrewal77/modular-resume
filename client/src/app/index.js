@@ -40,7 +40,7 @@ const github = "https://github.com/kgrewal77";
 
   const EditBtn = (props) => {
 
-    return <span className="iconcol edit-icon">
+    return <span className="iconcol">
           <i onClick={()=>{props.setEdit(!props.edit)}} 
              className={`fa icon ${props.edit? 'fa-undo' : 'fa-pencil-square-o'} `}>
             
@@ -50,31 +50,81 @@ const github = "https://github.com/kgrewal77";
 
   const SaveBtn = (props) => {
 
-    return <span className="iconcol save-icon">
+    return <span className="iconcol">
           <i onClick={()=>{
 
             let j;
             try {
-              console.log(props.rowtext);
               j = JSON.parse(props.rowtext);
-              console.log(j);
-              try {
-                updateStructureByKey(props.structkey,{"rowdata":j});
-                props.setEdit(!props.edit);
-                window.location.reload(true);
-              } catch (e) {
-                alert("update failed");
-                console.log(e);
-              }
+              updateStructureByKey(props.structkey,{"rowdata":j})
+                .then(()=>{
+                  window.location.reload(true);
+                })
+                .catch(error=>{
+                  alert("update failed: " + error.response.data.error);
+                });
             } catch (e) {
               alert("invalid json");
             }
+            
+
           }} 
              className={`fa icon fa-save`}>
             
           </i>
       </span>;
   }
+
+  const SaveAsBtn = (props) => {
+
+    return <span className="iconcol save-icon">
+          <i className={`fa icon fa-plus`}
+             onClick={()=>{
+
+            let j;
+            let k = window.prompt("enter resume name:");
+            try {
+              j = JSON.parse(props.rowtext);
+              insertStructure({"rowdata":j,key:k})
+                .then(()=>{
+                  window.location.href = "/" + k;
+                })
+                .catch(error=>{
+                  alert("create failed: " + error.response.data.error);
+
+                });
+            } catch (e) {
+              alert("invalid json");
+              //console.log(e);
+            }
+
+
+          }}>
+            
+          </i>
+      </span>;
+  }
+
+  const LoadBtn = (props) => {
+
+    return <span className="iconcol">
+          <i onClick={()=>{
+
+            let k = window.prompt("load existing rezume by name:");
+            getStructureByKey(k)
+              .then(()=>{
+                window.location.href = "/" + k;
+              }).catch(error=>{
+                alert("load failed: "+error.response.data.error);
+              });
+               
+          }} 
+             className={`fa icon fa-folder-open`}>
+            
+          </i>
+      </span>;
+  }
+
 
   const NavBar = (props) => {
    // console.log(props.backcolor||'white');
@@ -85,24 +135,27 @@ const github = "https://github.com/kgrewal77";
             <a href="/">
               <span className="title">RE-ZU.ME</span>
             </a>
-            
+
           </span>
           <span className="iconrow">
             <EditBtn edit={props.edit} setEdit={props.setEdit}/>
             {props.edit ?
-              <SaveBtn structkey={props.structkey} rowtext={props.rowtext} setEdit={props.setEdit}/> :
               <React.Fragment>
-                <IconLink icon="fa-at"
-                           link={`mailto:${email}`}
-                           />
-                <IconLink icon="fa-github"
-                           link={github}
-                           />
-                <IconLink icon="fa-linkedin"
-                           link={linkedin}
-                           />
+                  <LoadBtn structkey={props.structkey} rowtext={props.rowtext} setEdit={props.setEdit}/> 
+                  <SaveBtn structkey={props.structkey} rowtext={props.rowtext} setEdit={props.setEdit}/> 
+                  <SaveAsBtn structkey={props.structkey} rowtext={props.rowtext} setEdit={props.setEdit}/>
+              </React.Fragment> :
+              <React.Fragment>
+                    <IconLink icon="fa-at"
+                               link={`mailto:${email}`}
+                               />
+                    <IconLink icon="fa-github"
+                               link={github}
+                               />
+                    <IconLink icon="fa-linkedin"
+                               link={linkedin}
+                               />
               </React.Fragment>
-
               }
           </span>
         </div>
@@ -158,7 +211,8 @@ const github = "https://github.com/kgrewal77";
             style={a && {backgroundImage:`url(${a})`}}>
         {props.text ? 
           <p className="text-pane" 
-             style={{"textAlign":`${props.align?props.align:'default'}`}}
+             style={{"textAlign":`${props.align?props.align:'default'}`,
+                     "color":`${props.fontColor?props.fontColor:'black'}`}}
              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(props.text)}}>
           </p>
          :<div className="img-pane"></div>
@@ -207,6 +261,7 @@ const github = "https://github.com/kgrewal77";
                                      key={index}
                                      text={value.content}
                                      align={value.align}
+                                     fontColor={value.fontcolor}
                                      img_src={value.img}
                                      boxes={value.boxes}/>
 
@@ -234,7 +289,7 @@ const github = "https://github.com/kgrewal77";
                   '&quot;':'"',
                   '&#039;':"'" 
                 };
-                console.log(e.target);
+                //console.log(e.target);
                 props.setRowText(e.target.innerHTML
                     .replace(/&amp;/g,'&')
                     .replace(/&lt;/g,'<')

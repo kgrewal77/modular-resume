@@ -23,8 +23,8 @@ h1 {
 }
 
 .edit-icon {
-	align-self: left;
-}
+/*	align-self: left;
+*/}
 
 .navbar {
     height: 7vh;
@@ -170,7 +170,13 @@ a.box:hover, a.box:active {
 	align-content: center;
 }
 
-.iconrow {
+.iconrow  {
+    align-items: center;
+    display: inline-flex;
+	margin-left: auto;
+}
+
+.editrow{
     align-items: center;
     display: inline-flex;
 	margin-left: auto;

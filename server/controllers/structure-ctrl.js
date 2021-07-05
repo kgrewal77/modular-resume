@@ -6,7 +6,7 @@ createStructure = async (req, res) => {
     if (!body) {
         return res.status(400).json({
             success: false,
-            error: 'You must provide a structure',
+            error: 'You must provide a Rezume',
         })
     }
 
@@ -21,7 +21,7 @@ createStructure = async (req, res) => {
         if (structure) {
             return res
                 .status(400)
-                .json({ success: false, error: `Structure key not unique` })
+                .json({ success: false, error: `Rezume name not unique` })
         }
         
 
@@ -31,13 +31,13 @@ createStructure = async (req, res) => {
                 return res.status(201).json({
                     success: true,
                     key: newstructure.key,
-                    message: 'Structure created!',
+                    message: 'Rezume created!',
                 })
             })
             .catch(error => {
                 return res.status(400).json({
                     error,
-                    message: 'Structure not created!',
+                    message: 'Rezume not created!',
                 })
             })
 
@@ -60,7 +60,7 @@ updateStructure = async (req, res) => {
         if (err) {
             return res.status(404).json({
                 err,
-                message: 'Structure not found!',
+                message: 'Rezume not found!',
             })
         }
         structure.rowdata = body.rowdata;
@@ -70,13 +70,13 @@ updateStructure = async (req, res) => {
                 return res.status(200).json({
                     success: true,
                     key: structure.key,
-                    message: 'Structure updated!',
+                    message: 'Rezume updated!',
                 })
             })
             .catch(error => {
                 return res.status(404).json({
                     error,
-                    message: 'Structure not updated!',
+                    message: 'Rezume not updated!',
                 })
             })
     })
@@ -91,7 +91,7 @@ deleteStructure = async (req, res) => {
         if (!structure) {
             return res
                 .status(404)
-                .json({ success: false, error: `Structure not found` })
+                .json({ success: false, error: `Rezume not found` })
         }
 
         return res.status(200).json({ success: true, data: structure })
@@ -107,7 +107,7 @@ getStructureByKey = async (req, res) => {
         if (!structure) {
             return res
                 .status(404)
-                .json({ success: false, error: `Structure not found` })
+                .json({ success: false, error: `Rezume not found` })
         }
         return res.status(200).json({ success: true, data: structure })
     }).catch(err => console.log(err))
@@ -121,7 +121,7 @@ getStructures = async (req, res) => {
         if (!structures.length) {
             return res
                 .status(404)
-                .json({ success: false, error: `Structure not found` })
+                .json({ success: false, error: `Rezume not found` })
         }
         return res.status(200).json({ success: true, data: structures })
     }).catch(err => console.log(err))
