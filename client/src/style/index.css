@@ -76,6 +76,7 @@ h1 {
 }
 
 .pane {
+
 	display: flex;
 	flex-direction: column;
     background-size: cover;
@@ -88,6 +89,10 @@ h1 {
 .pane__full {
 
 	width: 100%;
+}
+
+.pane__noimg {
+	align-self: center;
 }
 
 .parallax {
@@ -145,12 +150,12 @@ a.box:hover, a.box:active {
 
 .slide__full {
 
-	height: 100vh !important;
+	min-height: 100vh !important;
 }
 
 .slide__half {
 
-	height:50vh !important;
+	min-height:50vh !important;
 }
 
 .namerow {

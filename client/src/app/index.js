@@ -20,13 +20,6 @@ import suit from '../img/suit.png';
 import rezume from '../img/rezume.PNG';
 import gif from '../img/loader.gif';
 
-// db
-// client.connect(err => {
-//   const collection = client.db("test").collection("devices");
-//   // perform actions on the collection object
-//   client.close();
-// });
-
 
 
 // consts
@@ -105,7 +98,7 @@ const github = "https://github.com/kgrewal77";
       </span>;
   }
 
-  const LoadBtn = (props) => {
+  const LoadBtn = () => {
 
     return <span className="iconcol">
           <i onClick={()=>{
@@ -141,9 +134,10 @@ const github = "https://github.com/kgrewal77";
             <EditBtn edit={props.edit} setEdit={props.setEdit}/>
             {props.edit ?
               <React.Fragment>
-                  <LoadBtn structkey={props.structkey} rowtext={props.rowtext} setEdit={props.setEdit}/> 
-                  <SaveBtn structkey={props.structkey} rowtext={props.rowtext} setEdit={props.setEdit}/> 
-                  <SaveAsBtn structkey={props.structkey} rowtext={props.rowtext} setEdit={props.setEdit}/>
+                  <LoadBtn/> 
+                  {!['home','kabir','edit1'].includes(props.structkey) && 
+                    <SaveBtn structkey={props.structkey} rowtext={props.rowtext} />} 
+                  <SaveAsBtn rowtext={props.rowtext} />
               </React.Fragment> :
               <React.Fragment>
                     <IconLink icon="fa-at"
@@ -190,7 +184,8 @@ const github = "https://github.com/kgrewal77";
         target={props.box.target || '_self'}>
         <span
           className="box-text" 
-          style={props.box.textStyle}>{props.box.text}
+          style={props.box.textStyle}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(props.box.text)}}>
         </span>
       </BoxTag> )
   }
@@ -207,7 +202,7 @@ const github = "https://github.com/kgrewal77";
     }
 
     return (
-      <span className={`pane ${props.size === 1 && 'pane__full'} ${a && 'parallax'}`}
+      <span className={`pane ${props.size === 1 && 'pane__full'} ${a ? 'parallax' : 'pane__noimg'}`}
             style={a && {backgroundImage:`url(${a})`}}>
         {props.text ? 
           <p className="text-pane" 
@@ -290,7 +285,7 @@ const github = "https://github.com/kgrewal77";
                   '&#039;':"'" 
                 };
                 //console.log(e.target);
-                props.setRowText(e.target.innerHTML
+                props.setRowText(DOMPurify.sanitize(e.target.innerHTML)
                     .replace(/&amp;/g,'&')
                     .replace(/&lt;/g,'<')
                     .replace(/&gt;/g,'>')
