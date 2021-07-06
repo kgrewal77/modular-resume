@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const functions = require('firebase-functions')
 
 const db = require('./db')
 const structureRouter = require('./routes/structure-router');
@@ -22,3 +23,4 @@ app.use('/api', structureRouter)
 
 
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`)) 
+//exports.server = functions.https.onRequest(app);

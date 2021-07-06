@@ -8,9 +8,7 @@ import "../style/prism.css";
 
 import {
     insertStructure,
-    getAllStructures,
     updateStructureByKey,
-    deleteStructureByKey,
     getStructureByKey,
 } from '../api/index.js';
 
@@ -19,6 +17,8 @@ import circuit from '../img/circuit_blue_half.jpg';
 import suit from '../img/suit.png';
 import rezume from '../img/rezume.PNG';
 import gif from '../img/loader.gif';
+
+
 
 
 
@@ -135,7 +135,7 @@ const github = "https://github.com/kgrewal77";
             {props.edit ?
               <React.Fragment>
                   <LoadBtn/> 
-                  {!['home','kabir','edit1'].includes(props.structkey) && 
+                  {!['home','kabir','edit'].includes(props.structkey) && 
                     <SaveBtn structkey={props.structkey} rowtext={props.rowtext} />} 
                   <SaveAsBtn rowtext={props.rowtext} />
               </React.Fragment> :
@@ -277,14 +277,7 @@ const github = "https://github.com/kgrewal77";
         <div className="edit-area">
           <pre>
             <code onBlur={(e)=>{ 
-                var map = {
-                  '&amp;': '&',
-                  '&lt;':'<',
-                  '&gt;':'>',
-                  '&quot;':'"',
-                  '&#039;':"'" 
-                };
-                //console.log(e.target);
+
                 props.setRowText(DOMPurify.sanitize(e.target.innerHTML)
                     .replace(/&amp;/g,'&')
                     .replace(/&lt;/g,'<')
