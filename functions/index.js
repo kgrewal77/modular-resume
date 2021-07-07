@@ -22,5 +22,5 @@ app.get('/', (req, res) => {
 app.use('/api', structureRouter)
 
 
-app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`)) 
-//exports.server = functions.https.onRequest(app);
+//app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`)) 
+exports.server = functions.https.onRequest(app);

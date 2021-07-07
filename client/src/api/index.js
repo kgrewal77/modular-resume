@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-    baseURL: 'http://localhost:3000/api',
+    baseURL: 'https://us-central1-rezume-eedc0.cloudfunctions.net/server/api',
 })
 
 export const insertStructure = payload => api.post(`/structure`, payload)

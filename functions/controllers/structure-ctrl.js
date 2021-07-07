@@ -101,7 +101,8 @@ deleteStructure = async (req, res) => {
 getStructureByKey = async (req, res) => {
     await Structure.findOne({ key: req.params.key }, (err, structure) => {
         if (err) {
-            return res.status(400).json({ success: false, error: err })
+            console.log(err);
+            return res.status(400).json({ success: false, error: err || 'error retrieving for key: '+req.params.key })
         }
 
         if (!structure) {

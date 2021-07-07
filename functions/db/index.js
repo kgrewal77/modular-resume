@@ -1,5 +1,6 @@
 require('dotenv').config()
 const mongoose = require('mongoose')
+const functions  = require('firebase-functions')
 
 mongoose
     .connect(
