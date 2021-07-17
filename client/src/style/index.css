@@ -1,7 +1,12 @@
-@import url(https://db.onlinewebfonts.com/c/50cd2aad9c8f35800bb6beac3ad42f16?family=Azonix);
-@import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css);
+/*@import url(https://db.onlinewebfonts.com/c/50cd2aad9c8f35800bb6beac3ad42f16?family=Azonix);
+*/@import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css);
 
 /*Small devices (landscape phones, 576px and up)*/
+
+@font-face {
+  font-family: 'azonix';
+  src: local('Azonix'), url(../fonts/Azonix.otf) format('opentype');
+}
 
 a {
 	color: inherit;
