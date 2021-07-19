@@ -163,6 +163,11 @@ a.box:hover, a.box:active {
 	min-height:50vh !important;
 }
 
+.slide__34 {
+
+	min-height:75vh !important;
+}
+
 .namerow {
 	height: 95%;
     align-items: center;

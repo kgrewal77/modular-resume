@@ -1,6 +1,8 @@
 import React, {useState,useEffect} from 'react';
 import DOMPurify from 'dompurify'
 import { InView } from 'react-intersection-observer';
+import {Helmet} from 'react-helmet';
+
 
 import '../style/index.css';
 import "../style/prism.css";
@@ -248,6 +250,7 @@ const github = "https://github.com/kgrewal77";
           <div //className="slide" 
           className={`${props.last  ? " slide__bottom ":""} 
                       ${props.size === 'full' ? " slide__full ":""} 
+                      ${props.size === 'three-quarter' ? " slide__34 ":""} 
                       ${props.size === 'half' ? " slide__half ":""} 
                       slide`}
           style={{background:`${props.backcolor||'white'}`}}>
@@ -329,7 +332,7 @@ const github = "https://github.com/kgrewal77";
     } else {
       return (
         <div className="content">
-          {props.contentkey && <NavBar structkey={props.contentkey} 
+          {<NavBar structkey={props.contentkey} 
                                        rowtext={rowtext} 
                                        edit={props.edit} 
                                        setEdit={props.setEdit} 
@@ -374,8 +377,18 @@ const github = "https://github.com/kgrewal77";
     } ,[key,setStructure]);
 
     return (
-
-          <Content edit={edit} setEdit={setEdit} contentkey={key} rowdata={structure.rowdata}/>
+        <React.Fragment>
+          <Helmet>
+            <title> Rezume </title>
+            <meta property="og:title" content="Re-Zu.Me: Custom Resume Builder" data-rh="true"/>
+            <meta property="og:description" content="Tailor your Resume to each potential employer with Re-Zu.Me" data-rh="true"/>
+            <meta property="og:url" content="https://re-zu.me"/>
+            <meta
+                name="viewport"
+                content="minimum-scale=1, initial-scale=1, width=device-width"/>
+          </Helmet>
+          <Content edit={edit} setEdit={setEdit} contentkey={key||'home'} rowdata={structure.rowdata}/>
+        </React.Fragment>
       );
     }
 
