@@ -18,6 +18,7 @@ import keyboard from '../img/keyboard.jpg';
 import circuit from '../img/circuit_blue_half.jpg';
 import suit from '../img/suit.png';
 import rezume from '../img/rezume.PNG';
+import diginto from '../img/diginto.PNG';
 import gif from '../img/loader.gif';
 
 
@@ -199,6 +200,7 @@ const github = "https://github.com/kgrewal77";
       case '../img/circuit_blue_half.jpg': a=circuit; break;
       case '../img/suit.png': a=suit; break;
       case '../img/rezume.PNG': a=rezume; break;
+      case '../img/diginto.PNG': a=diginto; break;
       case '../img/keyboard.jpg': a=keyboard; break;
       default: a=props.img_src;
     }
