@@ -107,3 +107,6 @@ dist
 #firebase
 .firebase
 .firebaserc
+
+#MAC
+.DS_Store
